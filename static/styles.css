@@ -1,0 +1,16 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #333;
+}
+
+#chat-box {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#message-form {
+    margin-top: 10px;
+}

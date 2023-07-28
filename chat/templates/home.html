@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Chat App</h1>
+    <div>
+        <h2>Create or Enter a Room</h2>
+        <a href="{% url 'create_room' %}">Create Room</a><br>
+        <a href="{% url 'enter_room' %}">Enter Room</a>
+    </div>
+
+    {% if error_message %}
+    <div>
+        <p style="color: red;">{{ error_message }}</p>
+    </div>
+    {% endif %}
+</body>
+</html>

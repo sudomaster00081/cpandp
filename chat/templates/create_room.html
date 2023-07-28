@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Room</title>
+    <script>
+        function capitalizeText(inputId) {
+            const inputElement = document.getElementById(inputId);
+            inputElement.value = inputElement.value.toUpperCase();
+        }
+    </script>
+</head>
+<body>
+    <h1>Create Room</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="room_name">Room Name (Optional):</label>
+        <input type="text" id="room_name" name="room_name"><br>
+
+        <label for="room_id">Room ID:</label>
+        <input type="text" id="room_id" name="room_id" required oninput="capitalizeText('room_id')"><br>
+
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea><br>
+
+        <label for="time_limit">Time Limit (hours):</label>
+        <input type="number" id="time_limit" name="time_limit" min="1" max="12" value="1"><br>
+
+        <label for="passkey">Passkey (Optional):</label>
+        <input type="password" id="passkey" name="passkey"><br>
+
+        <input type="submit" value="Create">
+    </form>
+
+    {% if error_message %}
+    <div>
+        <p style="color: red;">{{ error_message }}</p>
+    </div>
+    {% endif %}
+</body>
+</html>

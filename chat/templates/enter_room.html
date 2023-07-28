@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enter Room</title>
+    <script>
+        function capitalizeText(inputId) {
+            const inputElement = document.getElementById(inputId);
+            inputElement.value = inputElement.value.toUpperCase();
+        }
+    </script>
+</head>
+<body>
+    <h1>Enter Room</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="room_id">Room ID:</label>
+        <input type="text" id="room_id" name="room_id" required oninput="capitalizeText('room_id')"><br>
+
+
+        <label for="passkey">Passkey (if required):</label>
+        <input type="password" id="passkey" name="passkey"><br>
+
+        <input type="submit" value="Enter">
+    </form>
+    {% if error_message %}
+    <div>
+        <p style="color: red;">{{ error_message }}</p>
+    </div>
+    {% endif %}
+</body>
+</html>

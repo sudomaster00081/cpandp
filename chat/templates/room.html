@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Room</title>
+</head>
+<body>
+    <h1>Chat Room: {{ room_id }}</h1>
+    <div>
+        <h2>Chat History</h2>
+        <div id="chat-history">
+            {% for message in messages %}
+                <p id="message{{ message.id }}">{{ message.sender }}: {{ message.content }}</p>
+                <!-- Add the copy button for each message -->
+                <button onclick="copyToClipboard('message{{ message.id }}')">Copy</button>
+            {% endfor %}
+        </div>
+    </div>
+    <div>
+        <h2>Enter Message</h2>
+        <form id="chat-form" method="post">
+            {% csrf_token %}
+            <input type="text" id="message" name="message" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <!-- Add the Exit Room button -->
+    <form action="{% url 'exit_room' room_id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Exit Room</button>
+    </form>
+
+    <script>
+        // JavaScript code for copying chat content
+
+        function copyToClipboard(inputId) {
+            const messageElement = document.getElementById(inputId);
+            const text = messageElement.textContent;
+            const tempElement = document.createElement('textarea');
+            tempElement.value = text;
+            document.body.appendChild(tempElement);
+            tempElement.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempElement);
+            alert('Message copied to clipboard: ' + text);
+        }
+    </script>
+</body>
+</html>
