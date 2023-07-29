@@ -1,41 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Room</title>
-    <script>
-        function capitalizeText(inputId) {
-            const inputElement = document.getElementById(inputId);
-            inputElement.value = inputElement.value.toUpperCase();
-        }
-    </script>
-</head>
-<body>
-    <h1>Create Room</h1>
-    <form method="post">
-        {% csrf_token %}
-        <label for="room_name">Room Name (Optional):</label>
-        <input type="text" id="room_name" name="room_name"><br>
+{% extends 'base.html' %}
 
-        <label for="room_id">Room ID:</label>
-        <input type="text" id="room_id" name="room_id" required oninput="capitalizeText('room_id')"><br>
+{% block title %}CPandP - Create Room{% endblock %}
 
+{% block content %}
+    <div class="row mt-4">
+        <div class="col-md-6 mx-auto">
+            <h1>Create Room</h1>
+            <form method="post" class="room-form">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="room_name" class="form-label">Room Name (Optional):</label>
+                    <input type="text" id="room_name" name="room_name" class="form-control">
+                </div>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description"></textarea><br>
+                <div class="mb-3">
+                    <label for="room_id" class="form-label">Room ID:</label>
+                    <input type="text" id="room_id" name="room_id" required oninput="capitalizeText('room_id')" class="form-control">
+                </div>
 
-        <label for="time_limit">Time Limit (hours):</label>
-        <input type="number" id="time_limit" name="time_limit" min="1" max="12" value="1"><br>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <textarea id="description" name="description" class="form-control"></textarea>
+                </div>
 
-        <label for="passkey">Passkey (Optional):</label>
-        <input type="password" id="passkey" name="passkey"><br>
+                <div class="mb-3">
+                    <label for="time_limit" class="form-label">Time Limit (hours):</label>
+                    <input type="number" id="time_limit" name="time_limit" min="1" max="12" value="1" class="form-control">
+                </div>
 
-        <input type="submit" value="Create">
-    </form>
+                <div class="mb-3">
+                    <label for="passkey" class="form-label">Passkey (Optional):</label>
+                    <input type="password" id="passkey" name="passkey" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+        </div>
+    </div>
 
     {% if error_message %}
-    <div>
-        <p style="color: red;">{{ error_message }}</p>
-    </div>
+        <div class="row mt-4">
+            <div class="col-md-6 mx-auto">
+                <div class="alert alert-danger">{{ error_message }}</div>
+            </div>
+        </div>
     {% endif %}
-</body>
-</html>
+{% endblock %}

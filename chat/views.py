@@ -1,12 +1,9 @@
-from django.shortcuts import render
-from django.shortcuts import render, redirect
+
+from django.shortcuts import render, redirect,get_object_or_404
 from .models import Room, Message
 from django.utils import timezone
 import uuid
 # Create your views here.
-from django.shortcuts import render, redirect
-from .models import Room, Message
-import uuid 
 from django.utils.crypto import get_random_string
 
 def home(request):
@@ -50,10 +47,6 @@ def create_room(request):
 
 
 
-def enter_room(request):
-    # Implement logic to handle entering an existing room and redirect to the room interface
-    room_id = 1
-    return redirect('room_interface', room_id=room_id)
 
 # def room_interface(request, room_id):
 #     room = Room.objects.get(id=room_id)
@@ -74,27 +67,34 @@ def room_interface(request, room_id):
     room = Room.objects.get(id=room_id)
 
     if request.method == 'POST':
-        sender = 'User'  # You can customize this to get the sender's name from the user if needed
-        content = request.POST.get('message', '').upper()  # Convert the message content to uppercase
+        sender = 'Message'  # You can customize this to get the sender's name from the user if needed
+        content = request.POST.get('message', '')
         message = Message.objects.create(room=room, sender=sender, content=content)
 
     messages = Message.objects.filter(room=room)
 
-    # Create a dictionary that maps each message ID to its content
-    message_data = {f"message{message.id}": message.content for message in messages}
+        # Create a dictionary that maps each message ID to its content
+    message_data = {f"message{message.id}" : message.content for message in messages}
 
     return render(request, 'room.html', {'room_id': room.room_name, 'messages': messages, 'message_data': message_data})
+    return redirect('home')
+
+
+
+
 def enter_room(request):
     if request.method == 'POST':
-        room_id = request.POST.get('room_id', '')
+        room_id = request.POST.get('room_id', '').upper()
         passkey = request.POST.get('passkey', '')
 
         try:
             room = Room.objects.get(room_id=room_id)
+            print(passkey, room.passkey)
             if room.passkey == passkey:
+                
                 return redirect('room_interface', room_id=room.id)
             else:
-                error_message = "Room credentials not found. Please check the Room ID and Passkey."
+                error_message = "Invalid passkey. Please check the Passkey."
                 return render(request, 'enter_room.html', {'error_message': error_message})
         except Room.DoesNotExist:
             error_message = "Room credentials not found. Please check the Room ID and Passkey."
@@ -102,6 +102,7 @@ def enter_room(request):
 
     # If it's a GET request or form submission failed, render the enter room form
     return render(request, 'enter_room.html')
+
 
 def exit_room(request, room_id):
     # Implement logic to exit the room and redirect back to the homepage

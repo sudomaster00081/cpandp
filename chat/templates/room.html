@@ -1,49 +1,144 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Chat Room</title>
-</head>
-<body>
-    <h1>Chat Room: {{ room_id }}</h1>
-    <div>
-        <h2>Chat History</h2>
-        <div id="chat-history">
-            {% for message in messages %}
-                <p id="message{{ message.id }}">{{ message.sender }}: {{ message.content }}</p>
-                <!-- Add the copy button for each message -->
-                <button onclick="copyToClipboard('message{{ message.id }}')">Copy</button>
-            {% endfor %}
-        </div>
+{% extends 'base.html' %}
+
+{% block title %}CPandP - Room Interface{% endblock %}
+
+{% block content %}
+
+
+
+<h1 class="mb-4">Chat Room: {{ room_id }}</h1>
+<div class="container">
+    <h2>Chat History</h2>
+    <div id="chat-history">
+        {% for message in messages reversed %}
+            {% if forloop.counter <= 7 %}
+                <div class="message-card card mb-2">
+                    <div class="card-body">
+                        <span class="message-sender">{{ message.sender }}:</span> {{ message.content }}
+                        <!-- Add the date and time of creation -->
+                        <p class="message-time">{{ message.timestamp|date:"M d, Y H:i" }}</p>
+                        <!-- Add the copy button for each message -->
+                        <button class="btn btn-sm btn-primary" onclick="copyMessage('{{ message.content }}')">Copy</button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="message-card card mb-2" style="display: none;">
+                    <div class="card-body">
+                        <span class="message-sender">{{ message.sender }}:</span> {{ message.content }}
+                        <!-- Add the date and time of creation -->
+                        <p class="message-time">{{ message.timestamp|date:"M d, Y H:i" }}</p>
+                        <!-- Add the copy button for each message -->
+                        <button class="btn btn-sm btn-primary" onclick="copyMessage('{{ message.content }}')">Copy</button>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
-    <div>
+    {% if messages|length > 7 %}
+        <button class="btn btn-primary mt-3" id="viewMoreBtn">View More</button>
+    {% endif %}
+</div>
+
+
+
+    <div class="container mt-4">
         <h2>Enter Message</h2>
         <form id="chat-form" method="post">
             {% csrf_token %}
-            <input type="text" id="message" name="message" required>
-            <button type="submit">Send</button>
+            <div class="input-group mb-3 rounded-pill">
+                <input type="text" class="form-control rounded-pill" id="message" name="message" required>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </div>
         </form>
     </div>
 
     <!-- Add the Exit Room button -->
-    <form action="{% url 'exit_room' room_id %}" method="post">
+    <form class="container mt-4" action="{% url 'exit_room' room_id %}" method="post">
         {% csrf_token %}
-        <button type="submit">Exit Room</button>
+        <button type="submit" class="btn btn-danger">Exit Room</button>
     </form>
+
+    <!-- Toast Notification -->
+    <div class="position-fixed top-0 end-0 mt-3 me-3" style="z-index: 9999;">
+        <div class="toast" id="copyToast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="1500">
+            <div class="toast-body">Message copied to clipboard!</div>
+        </div>
+    </div>
+
+    <style>
+        .message-card {
+            border-radius: 15px;
+            background-color: #f8f9fa; /* Subtle shade of color */
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add some shadow for depth */
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #6c757d; /* Gray color for the timestamp */
+            margin-top: 5px;
+        }
+
+        .input-group {
+            border-radius: 50px; /* Rounded input box */
+        }
+    </style>
 
     <script>
         // JavaScript code for copying chat content
 
-        function copyToClipboard(inputId) {
-            const messageElement = document.getElementById(inputId);
-            const text = messageElement.textContent;
+        function copyMessage(message) {
+            // Create a temporary input element
             const tempElement = document.createElement('textarea');
-            tempElement.value = text;
+            tempElement.value = message;
+
+            // Append the input element to the document
             document.body.appendChild(tempElement);
+
+            // Select and copy the text
             tempElement.select();
             document.execCommand('copy');
+
+            // Remove the temporary input element from the document
             document.body.removeChild(tempElement);
-            alert('Message copied to clipboard: ' + text);
+
+            // Show the toast notification
+            const toast = new bootstrap.Toast(document.getElementById('copyToast'));
+            toast.show();
         }
     </script>
-</body>
-</html>
+
+<script>
+    // JavaScript code for copying chat content and handling "View More" button
+
+    // Variable to keep track of the number of messages currently displayed
+    let displayedMessages = 7;
+
+    // Function to load more messages
+    function loadMoreMessages() {
+        const chatHistory = document.getElementById('chat-history');
+        const messages = chatHistory.querySelectorAll('.message-card');
+        const totalMessages = messages.length;
+
+        // Check if there are more messages to display
+        if (displayedMessages < totalMessages) {
+            // Loop through the remaining messages and display them
+            for (let i = displayedMessages; i < displayedMessages + 7 && i < totalMessages; i++) {
+                messages[i].style.display = 'block';
+            }
+
+            // Update the number of messages currently displayed
+            displayedMessages += 7;
+
+            // Hide the "View More" button if all messages have been displayed
+            if (displayedMessages >= totalMessages) {
+                document.getElementById('viewMoreBtn').style.display = 'none';
+            }
+        }
+    }
+
+    // Attach click event to the "View More" button
+    document.getElementById('viewMoreBtn').addEventListener('click', loadMoreMessages);
+
+    // ... Rest of the JavaScript code ...
+</script>
+{% endblock %}

@@ -91,27 +91,27 @@ WSGI_APPLICATION = 'cpandp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # settings.py
 # postgres://username:password@hostname/databasename
 # postgres://fnfufvsk:CcZ4dWTnpvVObyMuhvj8FgwaCIWtQdgm@john.db.elephantsql.com/fnfufvsk
 #postgres://cpandp:69b2DvNhl2aV2REjsgm6hQFDKy6S7RVF@dpg-cj1rlgmnqqla1djei7tg-a.singapore-postgres.render.com/cpandp
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cpandp',  # Replace with your database name
-        'USER': 'cpandp',       # Replace with your database username
-        'PASSWORD': '69b2DvNhl2aV2REjsgm6hQFDKy6S7RVF',   # Replace with your database password
-        'HOST': 'dpg-cj1rlgmnqqla1djei7tg-a.singapore-postgres.render.com',           # Replace with your database host
-        'PORT': '5432',                # Replace with your database port (usually 5432)
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'cpandp',  # Replace with your database name
+#         'USER': 'cpandp',       # Replace with your database username
+#         'PASSWORD': '69b2DvNhl2aV2REjsgm6hQFDKy6S7RVF',   # Replace with your database password
+#         'HOST': 'dpg-cj1rlgmnqqla1djei7tg-a.singapore-postgres.render.com',           # Replace with your database host
+#         'PORT': '5432',                # Replace with your database port (usually 5432)
+#     }
+# }
 
 
 
